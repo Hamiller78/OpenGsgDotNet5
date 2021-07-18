@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CoreLib.GameLogic
 {
@@ -11,7 +12,16 @@ namespace CoreLib.GameLogic
 
         public void ProcessGameTick(long tickNumber)
         {
+            ProcessMovements();
+        }
 
+        private ProcessMovements()
+        {
+            IEnumerable<IMovableOnMap> listMovables = _gameServices.GetService<MovablesContainer>();
+            foreach (IMovableOnMap moveableObj in listMovables)
+            {
+                moveableObj.MoveOneTick();
+            }
         }
     }
 }
