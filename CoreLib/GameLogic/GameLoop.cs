@@ -17,10 +17,11 @@ namespace CoreLib.GameLogic
 
         private void ProcessMovements()
         {
- //           IMovablesProvider movProvider = (IMovablesProvider)_gameServiceProvider.GetService<IMovablesProvider>();
             IMovablesProvider movProvider =
                 _gameServiceProvider.GetService(typeof(IMovablesProvider)) as IMovablesProvider;
             IEnumerable<IMovableOnMap> listMovables = movProvider.GetMovables();
+            if (listMovables == null) return;
+
             foreach (IMovableOnMap moveableObj in listMovables)
             {
                 moveableObj.MoveOneTick();

@@ -27,20 +27,32 @@ namespace CoreUnitTests
             List<IMovableOnMap> listOfMOMs = new List<IMovableOnMap>();
             listOfMOMs.Add(moqMOM1.Object);
             listOfMOMs.Add(moqMOM2.Object);
-
             moqMovables.Setup(m => m.GetMovables())
                               .Returns(listOfMOMs);
-
             IMovablesProvider mockMovables = moqMovables.Object;
             _serviceCollection.AddSingleton(mockMovables);
 
             IServiceProvider serviceProvider = _serviceCollection.BuildServiceProvider();
-
             GameLoop gameLoop = new GameLoop(serviceProvider);
             gameLoop.ProcessGameTick(0);
 
             moqMOM1.Verify(m => m.MoveOneTick(), Times.Once());
             moqMOM2.Verify(m => m.MoveOneTick(), Times.Once());
+        }
+
+        [Fact]
+        public void NullMovablesList_ProcessGameTick_NoCrash()
+        {
+            Mock<IMovablesProvider> moqMovables = new Mock<IMovablesProvider>();
+            moqMovables.Setup(m => m.GetMovables())
+                              .Returns<IEnumerable<IMovableOnMap>>(null);
+            IMovablesProvider mockMovables = moqMovables.Object;
+            _serviceCollection.AddSingleton(mockMovables);
+
+            IServiceProvider serviceProvider
+                = _serviceCollection.BuildServiceProvider();
+            GameLoop gameLoop = new GameLoop(serviceProvider);
+            gameLoop.ProcessGameTick(0);
         }
 
     }
